@@ -2,9 +2,10 @@ import React, { useContext } from "react";
 import { AppBar, Box, Toolbar, Typography, Button } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { Context } from "../App";
+import { AuthContext } from "../context/authContext";
 
 const Navbar = () => {
-  const { auth, logout } = useContext(Context);
+  const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const onLogoutClick = () => {
@@ -22,7 +23,7 @@ const Navbar = () => {
             </Link>
           </Typography>
           <Box alignItems="right" sx={{ flexGrow: 1, textAlign: "right" }}>
-            {auth ? (
+            {user ? (
               <Button onClick={onLogoutClick} style={{ textDecoration: "none", color: "white" }}>
                 Logout
               </Button>

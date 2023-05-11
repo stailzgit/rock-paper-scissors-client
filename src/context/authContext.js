@@ -6,12 +6,13 @@ const initialState = {
 };
 
 if (localStorage.getItem("user")) {
-  const decodedToken = jwtDecode(localStorage.getItem("user"));
+  const userLS = JSON.parse(localStorage.getItem("user"));
+  const decodedToken = jwtDecode(userLS.token);
 
   if (decodedToken.exp * 1000 < Date.now()) {
     localStorage.removeItem("user");
   } else {
-    initialState.user = decodedToken;
+    initialState.user = { ...decodedToken, id: decodedToken.userId };
   }
 }
 
@@ -38,7 +39,8 @@ function AuthProvider(props) {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
   const login = (userData) => {
-    localStorage.setItem("user", { token: userData.token, id: userData.id });
+    localStorage.setItem("user", JSON.stringify({ token: userData.token, id: userData.id }));
+    console.log("====================================");
     dispatch({
       type: "LOGIN",
       payload: userData

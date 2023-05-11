@@ -5,11 +5,13 @@ import { useLazyQuery, useQuery } from "@apollo/client";
 import { Button, TextField, Container, Stack, Alert } from "@mui/material";
 import styled from "@emotion/styled";
 import { Context } from "../App";
-import { useAuth } from "../hooks/useAuth";
+import { AuthContext } from "../context/authContext";
 
 const GET_USER_BY_ID = gql`
   query getUserById($userId: ID!) {
     getUserById(userId: $userId) {
+      id
+      name
       email
     }
   }
@@ -34,29 +36,26 @@ const StackStyle = styled(Stack)({
 });
 
 const Homepage = () => {
-  const { auth } = useAuth();
-  const { userState } = useContext(Context);
-
+  const { user, updateAuth } = useContext(AuthContext);
   const [errors, setErrors] = useState([]);
 
   const [getUserById, { data, loading }] = useLazyQuery(GET_USER_BY_ID, {
     variables: {
-      userId: auth?.id
+      userId: user?.id
     }
   });
 
   useEffect(() => {
-    if (auth) {
-      getUserById(auth?.id);
+    if (user?.id) {
+      getUserById(user?.id);
     }
-    console.log("auth", auth);
   }, []);
-
+  console.log("data", data);
   const navigate = useNavigate();
   return (
     <div>
       Homepage
-      {auth ? (
+      {user ? (
         <p>Your email - {data?.getUserById?.email}</p>
       ) : (
         <div>

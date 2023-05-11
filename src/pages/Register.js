@@ -18,7 +18,8 @@ const REGISTER_USER = gql`
 `;
 
 const Register = () => {
-  const { login } = useAuth();
+  const { login } = useContext(AuthContext);
+
   const navigate = useNavigate();
   const [errors, setErrors] = useState([]);
 
