@@ -7,6 +7,7 @@ const GET_USER_BY_ID = gql`
       id
       name
       email
+      statusGame
     }
   }
 `;

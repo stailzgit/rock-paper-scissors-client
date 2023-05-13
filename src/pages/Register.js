@@ -5,6 +5,7 @@ import { useMutation, gql } from "@apollo/client";
 import { useNavigate } from "react-router-dom";
 import { Button, TextField, Container, Stack, Alert } from "@mui/material";
 import { useAuth } from "../hooks/useAuth";
+import useLoginUser from "../gql/Mutations/useLoginUser";
 
 const REGISTER_USER = gql`
   mutation RegisterUser($registerInput: RegisterInput) {
@@ -19,33 +20,34 @@ const REGISTER_USER = gql`
 
 const Register = () => {
   const { login } = useContext(AuthContext);
+  const { loginUserGQL } = useLoginUser();
 
   const navigate = useNavigate();
   const [errors, setErrors] = useState([]);
 
-  const registerUserCallback = () => {
-    registerUser();
-  };
+  const [registerUser, { loading }] = useMutation(REGISTER_USER, {
+    update(proxy, { data }) {
+      // login(data?.registerUser);
+      loginUserGQL(email, password);
+      navigate("/");
+    },
+    onError({ graphQLErrors }) {
+      setErrors(graphQLErrors);
+    }
+  });
 
-  const { onChange, onSubmit, values } = useForm(registerUserCallback, {
+  const { onChange, values } = useForm({
     name: "",
     email: "",
     password: "",
     confirmPassword: ""
   });
 
-  const { name, email, password, confirmPassword } = values;
+  const onRegisterUserClick = () => {
+    registerUser({ variables: { registerInput: { name, email, password } } });
+  };
 
-  const [registerUser, { loading }] = useMutation(REGISTER_USER, {
-    update(proxy, { data: { registerUser: userData } }) {
-      login(userData);
-      navigate("/");
-    },
-    onError({ graphQLErrors }) {
-      setErrors(graphQLErrors);
-    },
-    variables: { registerInput: { name, email, password } }
-  });
+  const { name, email, password, confirmPassword } = values;
 
   return (
     <Container spacing={2} maxWidth="sm" align="left">
@@ -63,7 +65,7 @@ const Register = () => {
           {error.message}
         </Alert>
       ))}
-      <Button variant="contained" onClick={onSubmit}>
+      <Button variant="contained" onClick={onRegisterUserClick}>
         Register
       </Button>
     </Container>

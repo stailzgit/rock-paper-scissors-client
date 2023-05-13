@@ -37,6 +37,7 @@ function authReducer(state, action) {
 
 function AuthProvider(props) {
   const [state, dispatch] = useReducer(authReducer, initialState);
+  // const {logoutUser} = useLoginUser()
 
   const login = (userData) => {
     localStorage.setItem("user", JSON.stringify({ token: userData.token, id: userData.id }));
@@ -44,6 +45,8 @@ function AuthProvider(props) {
       type: "LOGIN",
       payload: userData
     });
+    console.log("login = (userData)", userData);
+    console.log(" state.user", state.user);
   };
 
   const logout = () => {
