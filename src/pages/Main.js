@@ -6,6 +6,8 @@ import { Button, TextField, Container, Stack, Alert } from "@mui/material";
 import styled from "@emotion/styled";
 import { Context } from "../App";
 import { AuthContext } from "../context/authContext";
+import useGetUserById from "../gql/useGetUserById";
+import useGetUsersByStatusGame from "../gql/useGetUsersByStatusGame";
 
 const GET_USER_BY_ID = gql`
   query getUserById($userId: ID!) {
@@ -36,27 +38,56 @@ const StackStyle = styled(Stack)({
 });
 
 const Homepage = () => {
-  const { user, updateAuth } = useContext(AuthContext);
-  const [errors, setErrors] = useState([]);
+  const { user } = useContext(AuthContext);
 
-  const [getUserById, { data, loading }] = useLazyQuery(GET_USER_BY_ID, {
-    variables: {
-      userId: user?.id
-    }
-  });
+  const { getUserById, userById, error, loading } = useGetUserById();
+  const { getUsersByStatusGame, usersByStatusGame, errorStatusGame, loadingStatusGame } =
+    useGetUsersByStatusGame();
 
   useEffect(() => {
-    if (user?.id) {
-      getUserById(user?.id);
-    }
+    if (user?.id) getUserById(user?.id);
   }, []);
-  console.log("data", data);
-  const navigate = useNavigate();
+
+  const listOnlineUsers = (
+    <>
+      {errorStatusGame && <div>{errorStatusGame}</div>}
+      {loadingStatusGame && <div>Loading users...</div>}
+      {
+        <Stack spacing={2} direction="column">
+          {usersByStatusGame?.map((user) => (
+            <Button key={user?.id} variant="outlined">
+              {user?.name}
+            </Button>
+          ))}
+        </Stack>
+      }
+    </>
+  );
+
+  const onGetClick = () => {
+    getUsersByStatusGame("ONLINE", user?.id);
+  };
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
+
   return (
     <div>
       Homepage
-      {user ? (
-        <p>Your email - {data?.getUserById?.email}</p>
+      {user?.id ? (
+        <>
+          <p>
+            Your email - {userById?.email} Your name - {userById?.name}
+          </p>
+          <StackStyle>
+            {/* <Button variant="contained">Random user</Button>
+            <Button variant="contained">play with a friend</Button> */}
+            <Button variant="contained" onClick={onGetClick}>
+              get Online users
+            </Button>
+            {listOnlineUsers}
+          </StackStyle>
+        </>
       ) : (
         <div>
           {"Please "}
@@ -65,10 +96,6 @@ const Homepage = () => {
           <Link to="/register">register</Link>
         </div>
       )}
-      <StackStyle>
-        <Button variant="contained">Random user</Button>
-        <Button variant="contained">play with a friend</Button>
-      </StackStyle>
     </div>
   );
 };

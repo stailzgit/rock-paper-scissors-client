@@ -24,7 +24,6 @@ const Register = () => {
   const [errors, setErrors] = useState([]);
 
   const registerUserCallback = () => {
-    console.log("Callback hit");
     registerUser();
   };
 
@@ -39,7 +38,6 @@ const Register = () => {
 
   const [registerUser, { loading }] = useMutation(REGISTER_USER, {
     update(proxy, { data: { registerUser: userData } }) {
-      console.log("userData", userData);
       login(userData);
       navigate("/");
     },

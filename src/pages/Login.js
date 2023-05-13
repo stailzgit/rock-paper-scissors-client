@@ -23,7 +23,6 @@ const Login = () => {
   const [errors, setErrors] = useState([]);
 
   const loginUserCallback = () => {
-    console.log("Callback hit");
     loginUser();
   };
 
