@@ -13,7 +13,7 @@ const Navbar = () => {
   const onLogoutClick = () => {
     logout(user?.id);
     logoutUserGQL(user?.id);
-    navigate("/");
+    navigate("/login");
   };
 
   return (

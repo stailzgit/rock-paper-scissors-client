@@ -45,14 +45,25 @@ function AuthProvider(props) {
       type: "LOGIN",
       payload: userData
     });
-    console.log("login = (userData)", userData);
-    console.log(" state.user", state.user);
   };
 
   const logout = () => {
     localStorage.removeItem("user");
     dispatch({ type: "LOGOUT" });
   };
+
+  // function updateState() {
+  //   if (localStorage.getItem("user")) {
+  //     const userLS = JSON.parse(localStorage.getItem("user"));
+  //     const decodedToken = jwtDecode(userLS.token);
+
+  //     if (decodedToken.exp * 1000 < Date.now()) {
+  //       localStorage.removeItem("user");
+  //     } else {
+  //       initialState.user = { ...decodedToken, id: decodedToken.userId };
+  //     }
+  //   }
+  // }
 
   return <AuthContext.Provider value={{ user: state.user, login, logout }} {...props} />;
 }

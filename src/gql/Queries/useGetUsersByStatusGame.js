@@ -14,12 +14,11 @@ const GET_USERS_BY_STATUS_GAME = gql`
 
 const useGetUsersByStatusGame = () => {
   const [_getUsersByStatusGame, { data, loading, error }] = useLazyQuery(GET_USERS_BY_STATUS_GAME, {
-    fetchPolicy: "no-cache",
-    pollInterval: 2000
+    fetchPolicy: "no-cache"
+    // pollInterval: 2000
   });
 
   const getUsersByStatusGame = (statusGame, excludeMe) => {
-    console.log("getUsersByStatusGame");
     _getUsersByStatusGame({ variables: { statusGame, excludeMe } });
   };
 

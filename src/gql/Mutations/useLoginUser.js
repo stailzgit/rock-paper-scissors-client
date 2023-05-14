@@ -2,6 +2,7 @@ import gql from "graphql-tag";
 import { useMutation } from "@apollo/client";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../context/authContext";
+import { useNavigate } from "react-router-dom";
 
 const LOGIN_USER = gql`
   mutation loginUser($loginInput: LoginInput) {
@@ -10,36 +11,37 @@ const LOGIN_USER = gql`
       token
       name
       email
+      statusGame
     }
   }
 `;
 
 const useLoginUser = () => {
+  const navigate = useNavigate();
   const [data, setData] = useState();
-  const [error, setError] = useState();
+  const [errors, setErrors] = useState([]);
   const { login } = useContext(AuthContext);
 
   const [_loginUser, { loading }] = useMutation(LOGIN_USER, {
-    update(proxy, { data }) {
+    onCompleted(data) {
       setData(data);
       login(data?.loginUser);
-      console.log("update(proxy, { data }", data?.loginUser);
+      navigate("/");
     },
     onError({ graphQLErrors }) {
-      setError(graphQLErrors);
+      setErrors(graphQLErrors);
     }
   });
 
-  const loginUserGQL = (email, password) => {
-    console.log("loginUserGQL email, password", email, password);
+  const loginUser = (email, password) => {
     _loginUser({ variables: { loginInput: { email, password } } });
   };
 
   return {
     loginReturnData: data?.loginUser,
-    loginUserGQL,
+    loginUser,
     loading,
-    error: error?.message
+    errors: errors
   };
 };
 
@@ -50,7 +52,6 @@ const useLoginUser = () => {
 //     _loginUser({ variables: { loginInput: { email, password } } });
 //   };
 
-//   console.log("loginReturnData", data);
 //   return {
 //     loginReturnData: data?.loginUser,
 //     loginUserGQL,

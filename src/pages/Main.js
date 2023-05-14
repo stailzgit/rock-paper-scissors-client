@@ -1,13 +1,11 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import gql from "graphql-tag";
-import { useLazyQuery, useQuery } from "@apollo/client";
+import { Link } from "react-router-dom";
 import { Button, TextField, Container, Stack, Alert } from "@mui/material";
 import styled from "@emotion/styled";
-import { Context } from "../App";
 import { AuthContext } from "../context/authContext";
 import useGetUserById from "../gql/Queries/useGetUserById";
 import useGetUsersByStatusGame from "../gql/Queries/useGetUsersByStatusGame";
+import { LoadingButton } from "@mui/lab";
 
 const StackStyle = styled(Stack)({
   paddingTop: 20,
@@ -26,15 +24,12 @@ const Homepage = () => {
   const { user } = useContext(AuthContext);
 
   useEffect(() => {
-    console.log("user?.id", user?.id);
-    console.log("user", user);
     if (user?.id) getUserById(user?.id);
-  }, [userById]);
+  }, [user?.id]);
 
   const listOnlineUsers = (
     <>
       {errorStatusGame && <div>{errorStatusGame}</div>}
-      {loadingStatusGame && <div>Loading users...</div>}
       {usersByStatusGame && usersByStatusGame?.length !== 0 && (
         <Stack spacing={2} direction="column">
           {usersByStatusGame?.map((user) => (
@@ -63,11 +58,14 @@ const Homepage = () => {
             email - {userById?.email} name - {userById?.name} Status - {userById?.statusGame}
           </p>
           <StackStyle>
-            {/* <Button variant="contained">Random user</Button>
-            <Button variant="contained">play with a friend</Button> */}
-            <Button variant="contained" onClick={onGetOnlineUsersClick}>
-              get Online users
-            </Button>
+            <LoadingButton
+              size="small"
+              onClick={onGetOnlineUsersClick}
+              loading={loadingStatusGame}
+              loadingIndicator="Loading…"
+              variant="contained">
+              <span>get Online users</span>
+            </LoadingButton>
             {listOnlineUsers}
           </StackStyle>
         </>
