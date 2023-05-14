@@ -1,21 +1,16 @@
 import React from "react";
 import { useForm } from "../hooks/useForm";
 import { TextField, Container, Stack, Alert } from "@mui/material";
-import useLoginUser from "../gql/Mutations/useLoginUser";
+import useLoginUser from "../gql/Mutations/useLogin";
 import LoadingButton from "@mui/lab/LoadingButton";
 import SendIcon from "@mui/icons-material/Send";
 
 const Login = () => {
-  const {
-    onChange,
-    values: { email, password }
-  } = useForm({ email: "", password: "" });
+  const { errors, loading, loginUser } = useLoginUser();
+  const { onChange, values } = useForm({ email: "", password: "" });
+  const { email, password } = values;
 
-  const { errors, loading, loginReturnData, loginUser } = useLoginUser();
-
-  const onLoginClick = () => {
-    loginUser(email, password);
-  };
+  const onLoginClick = () => loginUser(email, password);
 
   return (
     <Container spacing={2} maxWidth="sm" align="left">

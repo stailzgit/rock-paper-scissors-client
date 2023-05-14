@@ -3,7 +3,7 @@ import { AppBar, Box, Toolbar, Typography, Button } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { Context } from "../App";
 import { AuthContext } from "../context/authContext";
-import useLogoutUser from "../gql/Mutations/useLogoutUser";
+import useLogoutUser from "../gql/Mutations/useLogout";
 
 const Navbar = () => {
   const { user, logout } = useContext(AuthContext);

@@ -1,28 +1,9 @@
-import React, { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../context/authContext";
+import React from "react";
 import { useForm } from "../hooks/useForm";
-import { useMutation, gql } from "@apollo/client";
-import { useNavigate } from "react-router-dom";
 import { Button, TextField, Container, Stack, Alert } from "@mui/material";
-import { useAuth } from "../hooks/useAuth";
-import useLoginUser from "../gql/Mutations/useLoginUser";
-import useRegisterUser from "../gql/Mutations/useRegisterUser";
-
-const REGISTER_USER = gql`
-  mutation RegisterUser($registerInput: RegisterInput) {
-    registerUser(input: $registerInput) {
-      id
-      email
-      name
-      token
-    }
-  }
-`;
+import useRegisterUser from "../gql/Mutations/useRegister";
 
 const Register = () => {
-  const { loginUser } = useLoginUser();
-
-  const navigate = useNavigate();
   const { onChange, values } = useForm({
     name: "",
     email: "",
@@ -33,24 +14,9 @@ const Register = () => {
 
   const { registerUser, loading, registerReturnData, errors } = useRegisterUser();
 
-  // const [registerUser, { loading }] = useMutation(REGISTER_USER, {
-  //   update(proxy, { data }) {
-  //     // login(data?.registerUser);
-  //     loginUserGQL(email, password);
-  //     navigate("/");
-  //   },
-  //   onError({ graphQLErrors }) {
-  //     setErrors(graphQLErrors);
-  //   }
-  // });
-
   const onRegisterUserClick = () => {
     registerUser(name, email, password);
   };
-
-  // useEffect(() => {
-  //   registerReturnData !== undefined && loginUser(email, password);
-  // }, [registerReturnData]);
 
   return (
     <Container spacing={2} maxWidth="sm" align="left">

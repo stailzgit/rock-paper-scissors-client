@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button, TextField, Container, Stack, Alert } from "@mui/material";
 import styled from "@emotion/styled";
 import { AuthContext } from "../context/authContext";
@@ -23,28 +23,31 @@ const Homepage = () => {
     useGetUsersByStatusGame();
   const { user } = useContext(AuthContext);
 
-  useEffect(() => {
-    if (user?.id) getUserById(user?.id);
-  }, [user?.id]);
-
   const listOnlineUsers = (
     <>
       {errorStatusGame && <div>{errorStatusGame}</div>}
-      {usersByStatusGame && usersByStatusGame?.length !== 0 && (
-        <Stack spacing={2} direction="column">
-          {usersByStatusGame?.map((user) => (
-            <Button key={user?.id} variant="outlined">
-              {user?.name}
-            </Button>
-          ))}
-        </Stack>
-      )}
+      {usersByStatusGame &&
+        (usersByStatusGame?.length === 0 ? (
+          <div>No online users</div>
+        ) : (
+          <Stack spacing={2} direction="column">
+            {usersByStatusGame?.map((user) => (
+              <Button key={user?.id} variant="outlined">
+                {user?.name}
+              </Button>
+            ))}
+          </Stack>
+        ))}
     </>
   );
 
   const onGetOnlineUsersClick = () => {
     getUsersByStatusGame("ONLINE", user?.id);
   };
+
+  useEffect(() => {
+    if (user?.id) getUserById(user?.id);
+  }, [user?.id]);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;

@@ -3,7 +3,7 @@ import { useMutation } from "@apollo/client";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../context/authContext";
 
-const LOGOUT_USER = gql`
+const LOGOUT_MUTATION = gql`
   mutation LogoutUser($userId: ID!) {
     logoutUser(userId: $userId) {
       id
@@ -14,13 +14,13 @@ const LOGOUT_USER = gql`
   }
 `;
 
-const useLogoutUser = () => {
+const useLogout = () => {
   const { logout } = useContext(AuthContext);
 
   const [error, setError] = useState();
   const [data, setData] = useState();
 
-  const [_logoutUser, { loading }] = useMutation(LOGOUT_USER, {
+  const [_logoutUser, { loading }] = useMutation(LOGOUT_MUTATION, {
     update(proxy, { data }) {
       setData(data);
       logout();
@@ -57,4 +57,4 @@ const useLogoutUser = () => {
 //   };
 // };
 
-export default useLogoutUser;
+export default useLogout;

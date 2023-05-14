@@ -1,11 +1,10 @@
 import gql from "graphql-tag";
 import { useMutation } from "@apollo/client";
 import { useContext, useState } from "react";
-import { AuthContext } from "../../context/authContext";
 import { useNavigate } from "react-router-dom";
-import useLoginUser from "./useLoginUser";
+import useLoginUser from "./useLogin";
 
-const REGISTER_USER = gql`
+const REGISTER_MUTATION = gql`
   mutation RegisterUser($registerInput: RegisterInput) {
     registerUser(input: $registerInput) {
       id
@@ -18,16 +17,17 @@ const REGISTER_USER = gql`
 
 const initLoginData = { email: "", password: "" };
 
-const useRegisterUser = () => {
+const useRegister = () => {
   const navigate = useNavigate();
   const [data, setData] = useState();
   const [errors, setErrors] = useState([]);
   const { loginUser } = useLoginUser();
   const [loginData, setLoginData] = useState(initLoginData);
 
-  const [_registerUser, { loading }] = useMutation(REGISTER_USER, {
+  const [_registerUser, { loading }] = useMutation(REGISTER_MUTATION, {
     onCompleted(proxy, { data }) {
       setData(data);
+
       //register and login quickly
       loginUser(loginData.email, loginData.password);
       setLoginData(initLoginData);
@@ -51,4 +51,4 @@ const useRegisterUser = () => {
   };
 };
 
-export default useRegisterUser;
+export default useRegister;
