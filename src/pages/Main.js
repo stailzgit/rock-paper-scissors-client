@@ -32,7 +32,7 @@ const Homepage = () => {
         ) : (
           <Stack spacing={2} direction="column">
             {usersByStatusGame?.map((user) => (
-              <Button key={user?.id} variant="outlined">
+              <Button key={user?.id} disabled={loadingStatusGame} variant="outlined">
                 {user?.name}
               </Button>
             ))}

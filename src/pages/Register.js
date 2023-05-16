@@ -2,6 +2,8 @@ import React from "react";
 import { useForm } from "../hooks/useForm";
 import { Button, TextField, Container, Stack, Alert } from "@mui/material";
 import useRegisterUser from "../gql/Mutations/useRegister";
+import { LoadingButton } from "@mui/lab";
+import SendIcon from "@mui/icons-material/Send";
 
 const Register = () => {
   const { onChange, values } = useForm({
@@ -34,9 +36,16 @@ const Register = () => {
           {error.message}
         </Alert>
       ))}
-      <Button variant="contained" onClick={onRegisterUserClick}>
-        Register
-      </Button>
+
+      <LoadingButton
+        size="small"
+        onClick={onRegisterUserClick}
+        endIcon={<SendIcon />}
+        loading={loading}
+        loadingPosition="end"
+        variant="contained">
+        <span>Register</span>
+      </LoadingButton>
     </Container>
   );
 };

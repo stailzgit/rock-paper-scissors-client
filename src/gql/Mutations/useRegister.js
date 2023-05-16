@@ -21,7 +21,7 @@ const useRegister = () => {
   const navigate = useNavigate();
   const [data, setData] = useState();
   const [errors, setErrors] = useState([]);
-  const { loginUser } = useLoginUser();
+  const { loginUser, loading: loadingLogin } = useLoginUser();
   const [loginData, setLoginData] = useState(initLoginData);
 
   const [_registerUser, { loading }] = useMutation(REGISTER_MUTATION, {
@@ -31,7 +31,6 @@ const useRegister = () => {
       //register and login quickly
       loginUser(loginData.email, loginData.password);
       setLoginData(initLoginData);
-      navigate("/");
     },
     onError({ graphQLErrors }) {
       setErrors(graphQLErrors);
@@ -46,7 +45,7 @@ const useRegister = () => {
   return {
     registerReturnData: data?.registerUser,
     registerUser,
-    loading,
+    loading: loading || (!loading && loadingLogin), //loading for reg and login together
     errors: errors
   };
 };
